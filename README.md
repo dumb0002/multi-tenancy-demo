@@ -12,32 +12,37 @@ cd ovn-kubernetes
 
 ## 2. Build the Image for Fedora and Launch the KIND Deployment
 
-
+Pull and tag pre-built image: 
 ```bash
-pushd dist/images
-make fedora-image
-popd
+docker pull ghcr.io/ovn-org/ovn-kubernetes/ovn-kube-fedora:master
+docker tag ghcr.io/ovn-org/ovn-kubernetes/ovn-kube-fedora:master ovn-daemonset-fedora
+```
 
+Continue with KIND deployment: 
+```bash
 pushd contrib
 export KUBECONFIG=${HOME}/ovn.conf
-./kind.sh
+./kind.sh -mne -nse
 popd
 ```
 
-### Check the Components
+Check the Components:
 
 ```bash
 kubectl -n ovn-kubernetes get pods
-# Expected output:
-# NAME                                    READY   STATUS    RESTARTS      AGE
-# ovnkube-control-plane-5b955978b-hwkjd   1/1     Running   1 (33m ago)   33m
-# ovnkube-identity-bmn6m                  1/1     Running   0             33m
-# ovnkube-node-gnvlg                      6/6     Running   0             33m
-# ovnkube-node-p2nxh                      6/6     Running   0             33m
-# ovnkube-node-rhr6p                      6/6     Running   0             33m
-# ovs-node-9mxqt                          1/1     Running   0             33m
-# ovs-node-tntpk                          1/1     Running   0             33m
-# ovs-node-wh2nb                          1/1     Running   0             33m
+```
+
+Expected output:
+```console
+NAME                                    READY   STATUS    RESTARTS       AGE
+ovnkube-control-plane-5b955978b-t922v   1/1     Running   1 (114s ago)   2m6s
+ovnkube-identity-r225g                  1/1     Running   0              2m7s
+ovnkube-node-nm5p5                      6/6     Running   0              2m5s
+ovnkube-node-wm9rj                      6/6     Running   0              2m5s
+ovnkube-node-x8cmc                      6/6     Running   0              2m5s
+ovs-node-2mhjv                          1/1     Running   0              2m8s
+ovs-node-2z99g                          1/1     Running   0              2m8s
+ovs-node-7p7fz                          1/1     Running   0              2m8s
 ```
 
 ## 3. Deploy KubeVirt
