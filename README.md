@@ -121,11 +121,55 @@ kubeflex-operator-g76mk                        0/1     Completed   0          2m
 postgres-postgresql-0                          1/1     Running     0          109s
 ```
 
-## 5. Create UDNs for Tenant-1 & Tenant-2:
+## 5. Create UDNs for Tenant-1 & Tenant-2
 
 
+```bash
+kubectl create -f udn-tenant-1.yaml
+```
 
-## 5. Create K3s Control Plane for Tenant-1 & Tenant-2
+Check the Components:
+
+```bash
+kubectl create -f udn-tenant-1.yaml
+```
+
+```bash
+kubectl get udn,cudn -A
+```
+
+Expected output:
+```console
+NAMESPACE   NAME                                         AGE
+tenant-1    userdefinednetwork.k8s.ovn.org/tenant-1-dp   3m36s
+
+NAMESPACE   NAME                                                      AGE
+            clusteruserdefinednetwork.k8s.ovn.org/tenant-1-cp         3m36s
+            clusteruserdefinednetwork.k8s.ovn.org/tenant-1-external   3m36s
+```
+
+Check 
+
+```bash
+kubectl get cudn tenant-1-cp -o jsonpath='{.status.conditions}' | jq
+```
+
+Expected similar output:
+
+```console
+[
+  {
+    "lastTransitionTime": "2026-04-13T18:59:58Z",
+    "message": "NetworkAttachmentDefinition has been created in following namespaces: [tenant-1]",
+    "reason": "NetworkAttachmentDefinitionCreated",
+    "status": "True",
+    "type": "NetworkCreated"
+  }
+]
+```
+
+
+## 6. Create K3s Control Plane for Tenant-1 & Tenant-2
 
 ```bash
 kflex create tenant-1-cp --type k3s --kubeconfig=/root/ovn.conf
@@ -146,7 +190,6 @@ kubectl config get-contexts
 
 ```bash
 kubectl config use-context kind-ovn
-
 kubectl -n tenant-1-cp-system get pods
 ```
 
