@@ -115,10 +115,10 @@ kubectl -n kubeflex-system get pods
 
 Expected similar output:
 ```console
-# NAME                                           READY   STATUS      RESTARTS   AGE
-# kubeflex-controller-manager-6fdf485568-mfzxf   2/2     Running     0          54s
-# kubeflex-operator-ffjn2                        0/1     Completed   0          54s
-# postgres-postgresql-0                          1/1     Running     0          48s
+NAME                                           READY   STATUS      RESTARTS   AGE
+kubeflex-controller-manager-6fdf485568-xzp2t   2/2     Running     0          2m3s
+kubeflex-operator-g76mk                        0/1     Completed   0          2m3s
+postgres-postgresql-0                          1/1     Running     0          109s
 ```
 
 ## 5. Create K3s Control Plane for Tenant-1 & Tenant-2
