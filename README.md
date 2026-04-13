@@ -72,17 +72,18 @@ kubectl -n kubevirt patch kubevirt kubevirt --type=merge --patch '{"spec":{"conf
 kubectl get all -n kubevirt
 ```
 
-```console
 # Expected output:
-# virt-api-7cc64fb85f-4pdpt         1/1     Running   0          31s
-# virt-api-7cc64fb85f-tjbgv         1/1     Running   0          113s
-# virt-controller-964c8dbcb-6kxn2   1/1     Running   0          85s
-# virt-controller-964c8dbcb-p82bg   1/1     Running   0          85s
-# virt-handler-fmqtc                1/1     Running   0          85s
-# virt-handler-q49zq                1/1     Running   0          85s
-# virt-handler-zfwf9                1/1     Running   0          85s
-# virt-operator-68f69776bc-dx97s    1/1     Running   0          8m8s
-# virt-operator-68f69776bc-wdpw2    1/1     Running   0          8m8s
+```console
+NAME                               READY   STATUS    RESTARTS   AGE
+virt-api-9d99b8957-46tkc           1/1     Running   0          2m47s
+virt-api-9d99b8957-g7kwr           1/1     Running   0          85s
+virt-controller-569dcc495f-hgw5l   1/1     Running   0          2m21s
+virt-controller-569dcc495f-vslnh   1/1     Running   0          2m21s
+virt-handler-78nhb                 1/1     Running   0          2m21s
+virt-handler-j5sbd                 1/1     Running   0          2m21s
+virt-handler-jlk74                 1/1     Running   0          2m21s
+virt-operator-7c4dc9d77f-4m7dm     1/1     Running   0          3m22s
+virt-operator-7c4dc9d77f-jzrh2     1/1     Running   0          3m22s
 ```
 
 ## 4. Deploy KubeFlex
