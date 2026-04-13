@@ -121,6 +121,10 @@ kubeflex-operator-g76mk                        0/1     Completed   0          2m
 postgres-postgresql-0                          1/1     Running     0          109s
 ```
 
+## 5. Create UDNs for Tenant-1 & Tenant-2:
+
+
+
 ## 5. Create K3s Control Plane for Tenant-1 & Tenant-2
 
 ```bash
