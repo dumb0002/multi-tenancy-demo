@@ -209,24 +209,42 @@ kubectl -n tenant-1-cp-system patch statefulset k3s-server --type=strategic --pa
 
 2. Verify the Patch:
 
+Check if patch was applied and the k3s control pod has joined the UDN control plane network:
 ```bash
-# Check if patch was applied
-kubectl -n tenant-1-cp-system get statefulset k3s-server -o yaml | grep -A 5 "k8s.v1.cni.cncf.io/networks"
+kubectl -n tenant-1-cp-system get pod k3s-server-0 -o jsonpath='{.metadata.annotations.k8s\.v1\.cni\.cncf\.io/network-status}'
+```
 
-# Watch pod restart
-kubectl -n tenant-1-cp-system get pods -w
+Expected similar output:
+```console
+[{
+    "name": "ovn-kubernetes",
+    "interface": "eth0",
+    "ips": [
+        "10.244.1.13"
+    ],
+    "mac": "0a:58:0a:f4:01:0d",
+    "default": true,
+    "dns": {}
+},{
+    "name": "tenant-1-cp-system/tenant-1-cp",
+    "interface": "net1",
+    "ips": [
+        "104.104.0.2"
+    ],
+    "mac": "0a:58:68:68:00:02",
+    "dns": {}
+}]
+```
 
-# Check pod logs after restart
-kubectl -n tenant-1-cp-system logs k3s-server-0 -f
-
-# Verify nodes
+Verify nodes
+```bash
 kubectl -n tenant-1-cp-system exec k3s-server-0 -- kubectl get nodes -o wide
 ```
 
+Expected similar output:
 ```console
-# Expected output:
-# NAME           STATUS     ROLES                  AGE   VERSION         INTERNAL-IP   EXTERNAL-IP   OS-IMAGE            KERNEL-VERSION    CONTAINER-RUNTIME
-# k3s-server-0   NotReady   control-plane,master   17m   v1.30.13+k3s1   104.104.0.3   104.104.0.3   K3s v1.30.13+k3s1   6.14.0-1011-aws   containerd://1.7.27-k3s1
+NAME           STATUS   ROLES                  AGE   VERSION         INTERNAL-IP   EXTERNAL-IP   OS-IMAGE            KERNEL-VERSION    CONTAINER-RUNTIME
+k3s-server-0   Ready    control-plane,master   26m   v1.30.13+k3s1   104.104.0.2   104.104.0.2   K3s v1.30.13+k3s1   6.14.0-1011-aws   containerd://1.7.27-k3s1
 ```
 
 ## 7. Create VM and Attach to K3s Control Plane

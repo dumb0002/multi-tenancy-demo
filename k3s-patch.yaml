@@ -1,23 +1,11 @@
-apiVersion: apps/v1
-kind: StatefulSet
-metadata:
-  name: k3s-server
-  namespace: k3s-cp-system
 spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: k3s-server
   template:
     metadata:
       annotations:
         k8s.v1.cni.cncf.io/networks: tenant-1-cp
-      labels:
-        app: k3s-server
     spec:
       containers:
       - name: k3s-server
-        image: rancher/k3s:v1.30.13-k3s1
         command:
         - sh
         - -c
@@ -56,10 +44,3 @@ spec:
             --flannel-iface=net1 \
             --data-dir=/var/lib/rancher/k3s \
             --snapshotter=native
-        volumeMounts:
-        - name: k3s-data
-          mountPath: /var/lib/rancher/k3s
-      volumes:
-      - name: k3s-data
-        persistentVolumeClaim:
-          claimName: k3s-data
