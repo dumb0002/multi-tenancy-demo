@@ -32,7 +32,7 @@ Check the Components:
 kubectl -n ovn-kubernetes get pods
 ```
 
-Expected output:
+Expected similar output:
 ```console
 NAME                                    READY   STATUS    RESTARTS       AGE
 ovnkube-control-plane-5b955978b-t922v   1/1     Running   1 (114s ago)   2m6s
@@ -54,25 +54,25 @@ echo $VERSION
 kubectl create -f "https://github.com/kubevirt/kubevirt/releases/download/${VERSION}/kubevirt-operator.yaml"
 ```
 
-### Deploy the KubeVirt Custom Resource Definitions
+Deploy the KubeVirt Custom Resource Definitions:
 
 ```bash
 kubectl create -f "https://github.com/kubevirt/kubevirt/releases/download/${VERSION}/kubevirt-cr.yaml"
 ```
 
-### Enable KubeVirt Emulation
+Enable KubeVirt Emulation:
 
 ```bash
 kubectl -n kubevirt patch kubevirt kubevirt --type=merge --patch '{"spec":{"configuration":{"developerConfiguration":{"useEmulation":true}}}}'
 ```
 
-### Check the Components
+Check the Components:
 
 ```bash
 kubectl get all -n kubevirt
 ```
 
-# Expected output:
+Expected similar output:
 ```console
 NAME                               READY   STATUS    RESTARTS   AGE
 virt-api-9d99b8957-46tkc           1/1     Running   0          2m47s
@@ -88,7 +88,7 @@ virt-operator-7c4dc9d77f-jzrh2     1/1     Running   0          3m22s
 
 ## 4. Deploy KubeFlex
 
-### Install CLI
+Install CLI:
 
 ```bash
 sudo su <<EOF
@@ -96,7 +96,7 @@ bash <(curl -s https://raw.githubusercontent.com/kubestellar/kubeflex/main/scrip
 EOF
 ```
 
-### Deploy KubeFlex Controller
+Deploy KubeFlex Controller:
 
 ```bash
 kubectl create ns kubeflex-system
@@ -107,14 +107,14 @@ helm upgrade --install kubeflex-operator oci://ghcr.io/kubestellar/kubeflex/char
   --set externalPort=9443
 ```
 
-### Check the Components
+Check the Components:
 
 ```bash
 kubectl -n kubeflex-system get pods
 ```
 
+Expected similar output:
 ```console
-# Expected output:
 # NAME                                           READY   STATUS      RESTARTS   AGE
 # kubeflex-controller-manager-6fdf485568-mfzxf   2/2     Running     0          54s
 # kubeflex-operator-ffjn2                        0/1     Completed   0          54s
