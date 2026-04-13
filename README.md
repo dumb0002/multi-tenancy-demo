@@ -1,5 +1,4 @@
-
-
+# Three Shades of Isolation: A Multi-tenancy Fortress
 
 
 ## 1. Create a KIND Cluster with UDN CNI
@@ -175,17 +174,17 @@ Expected similar output:
 kflex create tenant-1-cp --type k3s --kubeconfig=/root/ovn.conf
 ```
 
-### Check the Components
+Check the Components:
 
 ```bash
 kubectl config get-contexts
 ```
 
+Expected similar output:
 ```console
-# Expected output:
-# CURRENT   NAME          CLUSTER               AUTHINFO            NAMESPACE
-#           kind-ovn      kind-ovn              kind-ovn
-# *         tenant-1-cp   tenant-1-cp-cluster   tenant-1-cp-admin
+CURRENT   NAME          CLUSTER               AUTHINFO            NAMESPACE
+          kind-ovn      kind-ovn              kind-ovn            
+*         tenant-1-cp   tenant-1-cp-cluster   tenant-1-cp-admin 
 ```
 
 ```bash
@@ -193,22 +192,22 @@ kubectl config use-context kind-ovn
 kubectl -n tenant-1-cp-system get pods
 ```
 
+Expected similar output:
 ```console
-# Expected output:
-# NAME                             READY   STATUS      RESTARTS   AGE
-# k3s-bootstrap-kubeconfig-s2llj   0/2     Completed   4          3m33s
-# k3s-server-0                     1/1     Running     0          3m33s
+NAME                             READY   STATUS      RESTARTS   AGE
+k3s-bootstrap-kubeconfig-pfm2r   0/2     Completed   4          92s
+k3s-server-0                     1/1     Running     0          92s
 ```
 
-### Patch the K3s StatefulSet for UDN Configurations
+Patch the K3s StatefulSet for UDN Configurations:
 
-#### 1. Apply the Patch
+1. Apply the Patch:
 
 ```bash
 kubectl -n tenant-1-cp-system patch statefulset k3s-server --type=strategic --patch-file k3s-patch.yaml
 ```
 
-#### 2. Verify the Patch
+2. Verify the Patch:
 
 ```bash
 # Check if patch was applied
@@ -230,7 +229,7 @@ kubectl -n tenant-1-cp-system exec k3s-server-0 -- kubectl get nodes -o wide
 # k3s-server-0   NotReady   control-plane,master   17m   v1.30.13+k3s1   104.104.0.3   104.104.0.3   K3s v1.30.13+k3s1   6.14.0-1011-aws   containerd://1.7.27-k3s1
 ```
 
-### 3. Create VM and Attach to K3s Control Plane
+## 7. Create VM and Attach to K3s Control Plane
 
 #### a) Extract Join Token
 
