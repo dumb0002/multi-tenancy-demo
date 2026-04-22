@@ -254,7 +254,7 @@ k3s-server-0   Ready    control-plane,master   26m   v1.30.13+k3s1   104.104.0.2
 
 #### a) Create EgressIP:
 ```bash
-./create-egressip.sh
+./create-egressip.sh tenant-1
 ```
 
 Check if the egressIP was created successully:
@@ -280,7 +280,7 @@ kubectl exec -n tenant-1-cp-system k3s-server-0 -- cat /var/lib/rancher/k3s/serv
 #### b) Create the cloud-init secret for the VM
 
 ```bash
-kubectl -n tenant-1 create -f tenant-1-worker1-userdata-secret.yaml
+kubectl -n tenant-1 create -f tenant-1-workers-userdata-secret.yaml
 ```
 
 #### c) Create the VM
@@ -298,11 +298,13 @@ kubectl -n tenant-1 get vm
 Expected similar output:
 ```console
 NAME               AGE   STATUS    READY
-tenant-1-worker1   15h   Running   True
+tenant-1-worker1   78s   Running   True
+tenant-1-worker2   78s   Running   True
 ```
 
 #### d) Verify the VM is attached to the K3s Control Plane
 
+Wait for ~10 minutes for the VMs to fully start and then run:
 ```bash
 kubectl exec -n tenant-1-cp-system k3s-server-0 -- kubectl get nodes -o wide
 ```
