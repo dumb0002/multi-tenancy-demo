@@ -299,7 +299,6 @@ Expected similar output:
 ```console
 NAME               AGE   STATUS    READY
 tenant-1-worker1   78s   Running   True
-tenant-1-worker2   78s   Running   True
 ```
 
 #### d) Verify the VM is attached to the K3s Control Plane
@@ -326,11 +325,16 @@ VMI_NAME=$(kubectl -n tenant-1 get vmi -o jsonpath='{.items[0].metadata.name}')
 
 You can then check the logs of the k3s-agent at `/var/log/k3s-agent.log`. For example: `cat /var/log/k3s-agent.log`
 
+Lastly, Taint Master Node for K3s Control Plane not to run any workload - The workload should ONLY run in the worker nodes
+
+```bash
+$ kubectl -n tenant-1 exec -it k3s-server-0 --  kubectl -n default taint nodes k3s-server-0 node-role.kubernetes.io/master=:NoSchedule
+```
 
 ## 9. Create Proxy Pod for Ingress connectivity:
 
 ```bash
-kubectl create -f tenant-1-proxy-pod.yaml	
+kubectl -n tenant-1-proxy create -f tenant-1-proxy-pod.yaml	
 ```
 
 
