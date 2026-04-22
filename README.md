@@ -250,10 +250,29 @@ NAME           STATUS   ROLES                  AGE   VERSION         INTERNAL-IP
 k3s-server-0   Ready    control-plane,master   26m   v1.30.13+k3s1   104.104.0.2   104.104.0.2   K3s v1.30.13+k3s1   6.14.0-1011-aws   containerd://1.7.27-k3s1
 ```
 
-## 7. Create Proxy Pod for Ingress & Egress connectivity:
+## 7. Create Proxy Pod and EgressIP for Ingress & Egress connectivity:
 
+#### a) Create EgressIP:
+```bash
+./create-egressip.sh
+```
 
+Check if the VM was created successully and it's running:
 
+```bash
+kubectl get egressIP
+```
+
+Expected similar output:
+```console
+NAME              EGRESSIPS    ASSIGNED NODE       ASSIGNED EGRESSIPS
+tenant-1-egress   172.19.0.5   ovn-control-plane   172.19.0.5
+```
+
+#### b) Create Proxy Pod:
+```bash
+kubectl create -f tenant-1-proxy-pod.yaml	
+```
 
 
 ## 8. Create VM and Attach to K3s Control Plane
