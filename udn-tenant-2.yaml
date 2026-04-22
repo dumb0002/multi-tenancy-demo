@@ -5,7 +5,7 @@ metadata:
   name: tenant-2
   labels:
     k8s.ovn.org/primary-user-defined-network: ""
-    purpose: kubecon-eu-2026-demo
+    purpose: multi-tenancy-demo
     user: tenant-2
 ---
 apiVersion: v1
@@ -13,7 +13,7 @@ kind: Namespace
 metadata:
   name: tenant-2-proxy
   labels:
-    purpose: kubecon-eu-2026-demo
+    purpose: multi-tenancy-demo
     user: tenant-2
 ---
 apiVersion: k8s.ovn.org/v1
@@ -22,7 +22,7 @@ metadata:
   name: tenant-2-dp
   namespace: tenant-2
   labels:
-    purpose: kubecon-eu-2026-demo
+    purpose: multi-tenancy-demo
     user: tenant-2
 spec:
   topology: Layer3
@@ -36,7 +36,7 @@ kind: ClusterUserDefinedNetwork
 metadata:
   name: tenant-2-cp
   labels:
-    purpose: kubecon-eu-2026-demo
+    purpose: multi-tenancy-demo
     user: tenant-2
 spec:
   namespaceSelector:
@@ -56,7 +56,7 @@ kind: ClusterUserDefinedNetwork
 metadata:
   name: tenant-2-external
   labels:
-    purpose: kubecon-eu-2026-demo
+    purpose: multi-tenancy-demo
     user: tenant-2
 spec:
   namespaceSelector:
