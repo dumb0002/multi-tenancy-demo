@@ -250,14 +250,14 @@ NAME           STATUS   ROLES                  AGE   VERSION         INTERNAL-IP
 k3s-server-0   Ready    control-plane,master   26m   v1.30.13+k3s1   104.104.0.2   104.104.0.2   K3s v1.30.13+k3s1   6.14.0-1011-aws   containerd://1.7.27-k3s1
 ```
 
-## 7. Create Proxy Pod and EgressIP for Ingress & Egress connectivity:
+## 7. Create UDN EgressIP for Egress connectivity:
 
 #### a) Create EgressIP:
 ```bash
 ./create-egressip.sh
 ```
 
-Check if the VM was created successully and it's running:
+Check if the egressIP was created successully:
 
 ```bash
 kubectl get egressIP
@@ -268,12 +268,6 @@ Expected similar output:
 NAME              EGRESSIPS    ASSIGNED NODE       ASSIGNED EGRESSIPS
 tenant-1-egress   172.19.0.5   ovn-control-plane   172.19.0.5
 ```
-
-#### b) Create Proxy Pod:
-```bash
-kubectl create -f tenant-1-proxy-pod.yaml	
-```
-
 
 ## 8. Create VM and Attach to K3s Control Plane
 
@@ -329,6 +323,13 @@ VMI_NAME=$(kubectl -n tenant-1 get vmi -o jsonpath='{.items[0].metadata.name}')
 ```
 
 You can then check the logs of the k3s-agent at `/var/log/k3s-agent.log`. For example: `cat /var/log/k3s-agent.log`
+
+
+## 9. Create Proxy Pod for Ingress connectivity:
+
+```bash
+kubectl create -f tenant-1-proxy-pod.yaml	
+```
 
 
 
