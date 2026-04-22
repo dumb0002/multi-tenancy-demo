@@ -1,6 +1,9 @@
 # Three Shades of Isolation: A Multi-tenancy Fortress
 
 
+## Add Requirements Section
+- Add Krew installation is need for KubeVirt 
+
 ## 1. Create a KIND Cluster with UDN CNI
 
 
@@ -247,10 +250,67 @@ NAME           STATUS   ROLES                  AGE   VERSION         INTERNAL-IP
 k3s-server-0   Ready    control-plane,master   26m   v1.30.13+k3s1   104.104.0.2   104.104.0.2   K3s v1.30.13+k3s1   6.14.0-1011-aws   containerd://1.7.27-k3s1
 ```
 
-## 7. Create VM and Attach to K3s Control Plane
+## 7. Create Proxy Pod for Ingress & Egress connectivity:
+
+
+
+
+
+## 8. Create VM and Attach to K3s Control Plane
 
 #### a) Extract Join Token
 
 ```bash
 kubectl exec -n tenant-1-cp-system k3s-server-0 -- cat /var/lib/rancher/k3s/server/node-token
 ```
+
+#### b) Create the cloud-init secret for the VM
+
+```bash
+kubectl -n tenant-1 create -f tenant-1-worker1-userdata-secret.yaml
+```
+
+#### c) Create the VM
+
+```bash
+kubectl -n tenant-1 create -f tenant-1-vm-kind.yaml
+```
+
+Check if the VM was created successully and it's running:
+
+```bash
+kubectl -n tenant-1 get vm
+```
+
+Expected similar output:
+```console
+NAME               AGE   STATUS    READY
+tenant-1-worker1   15h   Running   True
+```
+
+#### d) Verify the VM is attached to the K3s Control Plane
+
+```bash
+kubectl exec -n tenant-1-cp-system k3s-server-0 -- kubectl get nodes -o wide
+```
+
+Expected similar output:
+```console
+NAME               STATUS   ROLES                  AGE   VERSION         INTERNAL-IP   EXTERNAL-IP   OS-IMAGE                          KERNEL-VERSION          CONTAINER-RUNTIME
+k3s-server-0       Ready    control-plane,master   16h   v1.30.13+k3s1   104.104.0.3   104.104.0.3   K3s v1.30.13+k3s1                 6.14.0-1011-aws         containerd://1.7.27-k3s1
+tenant-1-worker1   Ready    <none>                 15h   v1.30.13+k3s1   104.104.0.5   <none>        Fedora Linux 40 (Cloud Edition)   6.8.5-301.fc40.x86_64   containerd://1.7.27-k3s1
+```
+
+You can also check the logs of the k3s-agent running inside the VM:
+
+First login into the VM with username `fedora` and password `fedora`:
+
+```bash
+VMI_NAME=$(kubectl -n tenant-1 get vmi -o jsonpath='{.items[0].metadata.name}')
+```
+
+You can then check the logs of the k3s-agent at `/var/log/k3s-agent.log`. For example: `cat /var/log/k3s-agent.log`
+
+
+
+
