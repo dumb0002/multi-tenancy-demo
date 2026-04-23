@@ -403,18 +403,8 @@ k3s-server-0   Ready    control-plane,master   26m   v1.30.13+k3s1   104.104.0.2
 Before creating EgressIP resources, you must label the worker nodes that are eligible to host EgressIPs:
 
 ```bash
-# Label the worker nodes to allow EgressIP
 kubectl label nodes ovn-worker k8s.ovn.org/egress-assignable=""
 kubectl label nodes ovn-worker2 k8s.ovn.org/egress-assignable=""
-
-# Verify the labels were applied
-kubectl get nodes --show-labels | grep egress-assignable
-```
-
-Expected output:
-```console
-ovn-worker    Ready    <none>   1h   v1.31.0   ...k8s.ovn.org/egress-assignable=...
-ovn-worker2   Ready    <none>   1h   v1.31.0   ...k8s.ovn.org/egress-assignable=...
 ```
 
 #### b) Create EgressIP resources for both tenants
