@@ -337,6 +337,18 @@ kubectl -n tenant-1-cp-system exec -it k3s-server-0 --  kubectl -n default taint
 kubectl create -f tenant-1-proxy-pod.yaml	
 ```
 
+Verify that `tenant-1-proxy` pod is running:
+```bash
+k -n tenant-1-proxy get pods
+```
+
+Expected similar output:
+
+```console
+NAME             READY   STATUS    RESTARTS   AGE
+tenant-1-proxy   1/1     Running   0          6h44m
+```
+
 
 ## 10. Deploy the Workload:
 
@@ -350,6 +362,7 @@ Then, port-forward `tenant-1` svc to the port 8001 in the local machine:
 kubectl -n tenant-1-cp-system port-forward svc/k3s 8001:443
 ```
 
+Verify that `tenant-1` kubeconfig was extracted correctly:
 ```bash
 kubectl --kubeconfig=tenant-1-kubeconfig.yaml get nodes
 ```
@@ -361,7 +374,30 @@ k3s-server-0       Ready    control-plane,master   27h     v1.30.13+k3s1
 tenant-1-worker1   Ready    <none>                 6h31m   v1.30.13+k3s1
 ```
 
+Then, deploy the workload:
+
+```bash
+kubectl --kubeconfig=tenant-1-kubeconfig.yaml create -f nginx-deployment.yaml
+kubectl --kubeconfig=tenant-1-kubeconfig.yaml get all -l purpose=multi-tenancy-demo
+```
+
+Expected similar output:
+```console
+NAME                                    READY   STATUS    RESTARTS   AGE
+pod/nginx-deployment-6f67969cf9-x2khb   1/1     Running   0          4m45s
+
+NAME                    TYPE       CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE
+service/nginx-service   NodePort   10.43.247.167   <none>        80:30011/TCP   4m45s
+
+NAME                                          DESIRED   CURRENT   READY   AGE
+replicaset.apps/nginx-deployment-6f67969cf9   1         1         1       4m45s
+
+```
+
+
 ## 11. Send a request to Tenant-1 & Tenant-2:
+
+
 
 
 
