@@ -292,26 +292,33 @@ tenant-2-egress   172.19.0.6   ovn-control-plane   172.19.0.6
 
 ## 8. Create VMs and Attach to K3s Control Planes
 
-#### a) Extract Join Tokens for both tenants
+#### a) Automatically setup worker secrets with correct tokens and IPs
+
+Use the automated script to extract join tokens, get K3s server IPs, and create the userdata secrets:
 
 ```bash
-for TENANT in tenant-1 tenant-2; do
-  echo "=== ${TENANT} join token ==="
-  kubectl exec -n ${TENANT}-cp-system k3s-server-0 -- cat /var/lib/rancher/k3s/server/node-token
-done
+chmod +x setup-worker-secrets.sh
+./setup-worker-secrets.sh tenant-1 tenant-2
 ```
 
-#### b) Create the cloud-init secrets for the VMs
+This script will:
+- Extract K3s join tokens from each control plane
+- Get the K3s server UDN IP addresses
+- Generate tenant-specific userdata secret files
+- Apply the secrets to the cluster
 
-**Note:** Update the `K3S_TOKEN` in each tenant's userdata secret file with the token from step (a).
-
-```bash
-for TENANT in tenant-1 tenant-2; do
-  kubectl -n ${TENANT} create -f ${TENANT}-workers-userdata-secret.yaml
-done
+Expected output:
+```console
+==========================================
+Processing tenant: tenant-1
+==========================================
+✓ Token extracted: K10a1b2c3d4e5f6g7h8...
+✓ K3s server IP: 104.104.0.3
+✓ Generated tenant-1-workers-userdata-secret.yaml
+✓ Secret tenant-1-workers-userdata created/updated in namespace tenant-1
 ```
 
-#### c) Create the VMs
+#### b) Create the VMs
 
 ```bash
 for TENANT in tenant-1 tenant-2; do
