@@ -670,7 +670,7 @@ You now have two completely isolated tenants (tenant-1 and tenant-2), each with:
 - ✅ Proxy pods for ingress connectivity
 - ✅ Deployed nginx workloads
 
-Both tenants are completely isolated from each other at the network, control plane, and compute levels!
+Both tenants are completely isolated from each other at the network, control plane, and data plane!
 
 
 
