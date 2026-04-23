@@ -228,6 +228,32 @@ for TENANT in tenant-1 tenant-2; do
 done
 ```
 
+Expected similar output for each tenant:
+```console
+[
+  {
+    "name": "ovn-kubernetes",
+    "interface": "eth0",
+    "ips": [
+      "10.244.2.11"
+    ],
+    "mac": "0a:58:0a:f4:02:0b",
+    "default": true,
+    "dns": {}
+  },
+  {
+    "name": "tenant-1-cp-system/tenant-1-cp",
+    "interface": "net1",
+    "ips": [
+      "104.104.0.3"
+    ],
+    "mac": "0a:58:68:68:00:03",
+    "dns": {}
+  }
+]
+```
+
+
 Verify nodes for both tenants:
 ```bash
 for TENANT in tenant-1 tenant-2; do
