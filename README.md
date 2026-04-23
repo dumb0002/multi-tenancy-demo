@@ -2,6 +2,8 @@
 
 This guide demonstrates how to build a multi-tenant Kubernetes environment with complete isolation at the network, control plane, and compute levels using User-Defined Networks (UDNs), KubeFlex, and KubeVirt.
 
+![Three Shades of Isolation Architecture](figures/three-shades-of-isolation.png)
+
 ## Overview
 
 This is a **simple demonstration** running on a **KIND (Kubernetes in Docker) cluster** that showcases multi-tenancy isolation using **two tenants** (tenant-1 and tenant-2) as a use case. Each tenant runs an **nginx workload** to demonstrate complete isolation across:
