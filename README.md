@@ -270,7 +270,7 @@ k3s-server-0   Ready    control-plane,master   26m   v1.30.13+k3s1   104.104.0.2
 
 ## 7. Create UDN EgressIP for Egress connectivity:
 
-#### a) Create EgressIP for both tenants:
+Create egress IPs for each tenant:
 ```bash
 for TENANT in tenant-1 tenant-2; do
   ./create-egressip.sh ${TENANT}
@@ -297,7 +297,6 @@ tenant-2-egress   172.19.0.6   ovn-control-plane   172.19.0.6
 Use the automated script to extract join tokens, get K3s server IPs, and create the userdata secrets:
 
 ```bash
-chmod +x setup-worker-secrets.sh
 ./setup-worker-secrets.sh tenant-1 tenant-2
 ```
 

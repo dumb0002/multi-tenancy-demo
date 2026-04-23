@@ -1,21 +1,22 @@
 apiVersion: kubevirt.io/v1
 kind: VirtualMachine
 metadata:
-  name: tenant-1-worker1
+  name: tenant-2-worker1
+  namespace: tenant-2
   labels:
     purpose: multi-tenancy-demo
-    user: tenant-1
+    user: tenant-2
     role: worker
 spec:
   running: true
   template:
     metadata:
       labels:
-        kubevirt.io/vm: tenant-1-worker1
+        kubevirt.io/vm: tenant-2-worker1
         purpose: multi-tenancy-demo
-        user: tenant-1
+        user: tenant-2
       annotations:
-        k8s.v1.cni.cncf.io/networks: tenant-1-cp,tenant-1-external
+        k8s.v1.cni.cncf.io/networks: tenant-2-cp,tenant-2-external
     spec:
       domain:
         cpu:
@@ -43,10 +44,10 @@ spec:
           pod: {}
         - name: sec-int1
           multus:
-            networkName: tenant-1-cp # References the NAD for secondary network
+            networkName: tenant-2-cp # References the NAD for secondary network
         - name: sec-int2
           multus:
-            networkName: tenant-1-external
+            networkName: tenant-2-external
       volumes:
       - name: containerdisk
         containerDisk:
@@ -55,4 +56,4 @@ spec:
       - name: cloudinitdisk
         cloudInitNoCloud:
           secretRef:
-            name: tenant-1-workers-userdata
+            name: tenant-2-workers-userdata
