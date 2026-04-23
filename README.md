@@ -1,6 +1,6 @@
 # Three Shades of Isolation: A Multi-tenancy Fortress
 
-This guide demonstrates how to build a multi-tenant Kubernetes environment with complete isolation at the network, control plane, and compute levels using User-Defined Networks (UDNs), KubeFlex, and KubeVirt.
+This guide demonstrates how to build a multi-tenant Kubernetes environment with complete isolation at the control plane, data plane, and network layer using User-Defined Networks (UDNs), KubeFlex, and KubeVirt.
 
 ![Three Shades of Isolation Architecture](figures/three-shades-of-isolation.png)
 
@@ -198,7 +198,7 @@ kubectl -n kubevirt patch kubevirt kubevirt --type=merge --patch '{"spec":{"conf
 Check the Components:
 
 ```bash
-kubectl get all -n kubevirt
+kubectl -n kubevirt get pods
 ```
 
 Expected similar output:
@@ -278,9 +278,10 @@ NAMESPACE   NAME                                                      AGE
             clusteruserdefinednetwork.k8s.ovn.org/tenant-2-external   3m30s
 ```
 
-Check 
+Verify if the UDNs are successfully created:
 
 ```bash
+# Test tenant-1
 kubectl get cudn tenant-1-cp -o jsonpath='{.status.conditions}' | jq
 ```
 
