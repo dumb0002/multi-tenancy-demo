@@ -426,8 +426,8 @@ kubectl get egressip
 Expected output:
 ```console
 NAME              EGRESSIPS    ASSIGNED NODE   ASSIGNED EGRESSIPS
-tenant-1-egress   172.19.0.5   ovn-worker      172.19.0.5
-tenant-2-egress   172.19.0.6   ovn-worker2     172.19.0.6
+tenant-1-egress   172.19.0.5   ovn-worker2     172.19.0.5
+tenant-2-egress   172.19.0.6   ovn-worker      172.19.0.6
 ```
 
 **Note:** The `ASSIGNED NODE` column should show one of the worker nodes (`ovn-worker` or `ovn-worker2`). If it's empty, check that the node labels were applied correctly.
