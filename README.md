@@ -1,8 +1,77 @@
 # Three Shades of Isolation: A Multi-tenancy Fortress
 
+This guide demonstrates how to build a multi-tenant Kubernetes environment with complete isolation at the network, control plane, and compute levels using User-Defined Networks (UDNs), KubeFlex, and KubeVirt.
 
-## Add Requirements Section
-- Add Krew installation is need for KubeVirt 
+## Table of Contents
+
+1. [Requirements](#requirements)
+2. [Create a KIND Cluster with UDN CNI](#1-create-a-kind-cluster-with-udn-cni)
+3. [Build the Image for Fedora and Launch KIND](#2-build-the-image-for-fedora-and-launch-the-kind-deployment)
+4. [Deploy KubeVirt](#3-deploy-kubevirt)
+5. [Deploy KubeFlex](#4-deploy-kubeflex)
+6. [Create UDNs for Tenants](#5-create-udns-for-tenant-1--tenant-2)
+7. [Create K3s Control Planes](#6-create-k3s-control-plane-for-tenant-1--tenant-2)
+8. [Create UDN EgressIP](#7-create-udn-egressip-for-egress-connectivity)
+9. [Create VMs and Attach to K3s](#8-create-vms-and-attach-to-k3s-control-planes)
+10. [Create Proxy Pods](#9-create-proxy-pods-for-ingress-connectivity)
+11. [Deploy Workloads](#10-deploy-the-workloads)
+12. [Test the Setup](#11-send-requests-to-tenant-1--tenant-2)
+
+## Requirements
+
+### System Requirements
+- **OS**: Linux (Ubuntu 20.04+ or similar)
+- **CPU**: 8+ cores recommended
+- **RAM**: 16GB+ recommended
+- **Disk**: 50GB+ free space
+
+### Required Tools
+
+| Tool | Version | Installation | Purpose |
+|------|---------|--------------|---------|
+| **Docker** | 20.10+ | [Install Docker](https://docs.docker.com/engine/install/) | Container runtime for KIND |
+| **kubectl** | 1.28+ | [Install kubectl](https://kubernetes.io/docs/tasks/tools/) | Kubernetes CLI |
+| **KIND** | 0.20+ | [Install KIND](https://kind.sigs.k8s.io/docs/user/quick-start/#installation) | Local Kubernetes cluster |
+| **Helm** | 3.12+ | [Install Helm](https://helm.sh/docs/intro/install/) | Package manager for Kubernetes |
+| **jq** | 1.6+ | `sudo apt install jq` (Ubuntu) | JSON processor |
+| **virtctl** | Latest | See below | KubeVirt CLI |
+| **kflex** | 0.9.3+ | See Section 4 | KubeFlex CLI |
+
+### Install virtctl (KubeVirt CLI)
+
+```bash
+# Install krew (kubectl plugin manager)
+(
+  set -x; cd "$(mktemp -d)" &&
+  OS="$(uname | tr '[:upper:]' '[:lower:]')" &&
+  ARCH="$(uname -m | sed -e 's/x86_64/amd64/' -e 's/\(arm\)\(64\)\?.*/\1\2/' -e 's/aarch64$/arm64/')" &&
+  KREW="krew-${OS}_${ARCH}" &&
+  curl -fsSLO "https://github.com/kubernetes-sigs/krew/releases/latest/download/${KREW}.tar.gz" &&
+  tar zxvf "${KREW}.tar.gz" &&
+  ./"${KREW}" install krew
+)
+
+# Add krew to PATH
+export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
+echo 'export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"' >> ~/.bashrc
+
+# Install virtctl
+kubectl krew install virt
+```
+
+### Verify Installation
+
+```bash
+# Check all required tools
+docker --version
+kubectl version --client
+kind --version
+helm version
+jq --version
+virtctl version
+```
+
+---
 
 ## 1. Create a KIND Cluster with UDN CNI
 
@@ -361,7 +430,7 @@ First login into the VM with username `fedora` and password `fedora`:
 
 ```bash
 # Example for tenant-1
-virtctl console tenant-1-worker1 -n tenant-1
+kubectl virt console tenant-1-worker1 -n tenant-1
 ```
 
 You can then check the logs of the k3s-agent at `/var/log/k3s-agent.log`. For example: `cat /var/log/k3s-agent.log`
