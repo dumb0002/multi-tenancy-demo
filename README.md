@@ -35,7 +35,6 @@ This guide demonstrates how to build a multi-tenant Kubernetes environment with 
 | **Helm** | 3.12+ | [Install Helm](https://helm.sh/docs/intro/install/) | Package manager for Kubernetes |
 | **jq** | 1.6+ | `sudo apt install jq` (Ubuntu) | JSON processor |
 | **virtctl** | Latest | See below | KubeVirt CLI |
-| **kflex** | 0.9.3+ | See Section 4 | KubeFlex CLI |
 
 ### Install virtctl (KubeVirt CLI)
 
@@ -59,17 +58,64 @@ echo 'export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"' >> ~/.bashrc
 kubectl krew install virt
 ```
 
-### Verify Installation
+
+### ⚠️ Critical Requirement: VRF Kernel Module
+
+**1. Check if VRF module is available:**
 
 ```bash
-# Check all required tools
-docker --version
-kubectl version --client
-kind --version
-helm version
-jq --version
-virtctl version
+# Check if VRF module exists
+modinfo vrf
+
+# Check if VRF is currently loaded
+lsmod | grep vrf
 ```
+
+**2. Install VRF module (if not available):**
+
+For **Ubuntu/Debian**:
+```bash
+# Install linux-modules-extra package
+sudo apt update
+sudo apt install linux-modules-extra-$(uname -r)
+```
+
+For **Amazon Linux 2/RHEL/CentOS**:
+```bash
+# VRF is usually included in the kernel-modules package
+sudo yum install kernel-modules-$(uname -r)
+```
+
+**3. Load the VRF module:**
+
+```bash
+# Load VRF module
+sudo modprobe vrf
+
+# Verify it's loaded
+lsmod | grep vrf
+```
+
+Expected similar output:
+```console
+vrf                    28672  0
+```
+
+
+**4. Verify VRF is working:**
+
+```bash
+# Check VRF capabilities
+ip link help 2>&1 | grep vrf
+
+# Should show VRF-related options
+```
+
+**Why is this important?**
+- Layer3 UDNs require VRF for isolated routing tables
+- EgressIP functionality depends on VRF
+- Without VRF, pods in UDNs cannot reach external networks
+- The KIND cluster will fail to initialize Layer3 network features
 
 ---
 
