@@ -102,7 +102,7 @@ spec:
         proxy_temp_path /tmp/proxy_temp;
         
         upstream backend {
-          server ${VM_IP}:30012;
+          server ${VM_IP}:30011;
         }
         
         server {
