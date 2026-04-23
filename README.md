@@ -6,7 +6,7 @@ This guide demonstrates how to build a multi-tenant Kubernetes environment with 
 
 ## Overview
 
-This is a **simple demonstration** running on a **KIND (Kubernetes in Docker) cluster** that showcases multi-tenancy isolation using **two tenants** (tenant-1 and tenant-2) as a use case. Each tenant runs an **nginx workload** to demonstrate complete isolation across:
+This is a **simple demonstration** running on a **KIND (Kubernetes in Docker) cluster** that showcases the three shades of isolation for multi-tenancy isolation using **two tenants** (tenant-1 and tenant-2) as a use case. Each tenant runs an **nginx workload** to demonstrate complete isolation across:
 
 - **Network Layer**: Isolated User-Defined Networks (UDNs) with separate routing tables
 - **Control Plane Layer**: Dedicated K3s control planes per tenant using KubeFlex
