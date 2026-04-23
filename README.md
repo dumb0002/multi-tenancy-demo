@@ -328,15 +328,14 @@ done
 Check if the VMs were created successfully and are running:
 
 ```bash
-kubectl -n tenant-1 get vm
-kubectl -n tenant-2 get vm
+kubectl get vm -A -l purpose=multi-tenancy-demo
 ```
 
 Expected similar output for each tenant:
 ```console
-NAME               AGE   STATUS    READY
-tenant-1-worker1   78s   Running   True
-tenant-1-worker2   78s   Running   True
+NAMESPACE   NAME               AGE     STATUS    READY
+tenant-1    tenant-1-worker1   78s     Running   True
+tenant-2    tenant-2-worker1   78s     Running   True
 ```
 
 #### d) Verify the VMs are attached to their K3s Control Planes
@@ -354,7 +353,6 @@ Expected similar output for each tenant:
 NAME               STATUS   ROLES                  AGE   VERSION         INTERNAL-IP   EXTERNAL-IP   OS-IMAGE                          KERNEL-VERSION          CONTAINER-RUNTIME
 k3s-server-0       Ready    control-plane,master   16h   v1.30.13+k3s1   104.104.0.3   104.104.0.3   K3s v1.30.13+k3s1                 6.14.0-1011-aws         containerd://1.7.27-k3s1
 tenant-1-worker1   Ready    <none>                 15h   v1.30.13+k3s1   104.104.0.5   <none>        Fedora Linux 40 (Cloud Edition)   6.8.5-301.fc40.x86_64   containerd://1.7.27-k3s1
-tenant-1-worker2   Ready    <none>                 15h   v1.30.13+k3s1   104.104.0.7   <none>        Fedora Linux 40 (Cloud Edition)   6.8.5-301.fc40.x86_64   containerd://1.7.27-k3s1
 ```
 
 You can also check the logs of the k3s-agent running inside any VM:

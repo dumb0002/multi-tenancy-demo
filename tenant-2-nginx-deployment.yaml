@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: nginx-tenant1-html
+  name: nginx-tenant-2-html
 data:
   index.html: |
     <!DOCTYPE html>
     <html>
     <head>
-    <title>Welcome to nginx from tenant-1!</title>
+    <title>Welcome to nginx from tenant-2!</title>
     <style>
         body {
             width: 35em;
@@ -17,7 +17,7 @@ data:
     </style>
     </head>
     <body>
-    <h1>Welcome to nginx from tenant-1!</h1>
+    <h1>Welcome to nginx from tenant-2!</h1>
     <p>If you see this page, the nginx web server is successfully installed and
     working. Further configuration is required.</p>
 
@@ -26,7 +26,7 @@ data:
     Commercial support is available at
     <a href="http://nginx.com/">nginx.com</a>.</p>
 
-    <p><em>Thank you for using nginx from tenant-1.</em></p>
+    <p><em>Thank you for using nginx from tenant-2.</em></p>
     </body>
     </html>
 ---
@@ -58,7 +58,7 @@ spec:
       volumes:
       - name: nginx-html
         configMap:
-          name: nginx-tenant1-html
+          name: nginx-tenant-2-html
 ---
 apiVersion: v1
 kind: Service

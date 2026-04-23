@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: nginx-tenant1-html
+  name: nginx-tenant-1-html
 data:
   index.html: |
     <!DOCTYPE html>
@@ -58,7 +58,7 @@ spec:
       volumes:
       - name: nginx-html
         configMap:
-          name: nginx-tenant1-html
+          name: nginx-tenant-1-html
 ---
 apiVersion: v1
 kind: Service
