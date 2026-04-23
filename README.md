@@ -328,14 +328,40 @@ You can then check the logs of the k3s-agent at `/var/log/k3s-agent.log`. For ex
 Lastly, Taint Master Node for K3s Control Plane not to run any workload - The workload should ONLY run in the worker nodes
 
 ```bash
-$ kubectl -n tenant-1 exec -it k3s-server-0 --  kubectl -n default taint nodes k3s-server-0 node-role.kubernetes.io/master=:NoSchedule
+kubectl -n tenant-1-cp-system exec -it k3s-server-0 --  kubectl -n default taint nodes k3s-server-0 node-role.kubernetes.io/master=:NoSchedule
 ```
 
 ## 9. Create Proxy Pod for Ingress connectivity:
 
 ```bash
-kubectl -n tenant-1-proxy create -f tenant-1-proxy-pod.yaml	
+kubectl create -f tenant-1-proxy-pod.yaml	
 ```
+
+
+## 10. Deploy the Workload:
+
+```bash
+./extract-kubeconfig.sh tenant-1  https://localhost:8001 config
+```
+
+Then, port-forward `tenant-1` svc to the port 8001 in the local machine:
+
+```bash
+kubectl -n tenant-1-cp-system port-forward svc/k3s 8001:443
+```
+
+```bash
+kubectl --kubeconfig=tenant-1-kubeconfig.yaml get nodes
+```
+
+Expected similar output:
+```console
+NAME               STATUS   ROLES                  AGE     VERSION
+k3s-server-0       Ready    control-plane,master   27h     v1.30.13+k3s1
+tenant-1-worker1   Ready    <none>                 6h31m   v1.30.13+k3s1
+```
+
+## 11. Send a request to Tenant-1 & Tenant-2:
 
 
 
