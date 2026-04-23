@@ -339,14 +339,17 @@ kubectl create -f tenant-1-proxy-pod.yaml
 
 Verify that `tenant-1-proxy` pod is running:
 ```bash
-k -n tenant-1-proxy get pods
+kubectl -n tenant-1-proxy get all
 ```
 
 Expected similar output:
 
 ```console
-NAME             READY   STATUS    RESTARTS   AGE
-tenant-1-proxy   1/1     Running   0          6h44m
+AME                 READY   STATUS    RESTARTS   AGE
+pod/tenant-1-proxy   1/1     Running   0          6h55m
+
+NAME                         TYPE           CLUSTER-IP     EXTERNAL-IP   PORT(S)          AGE
+service/tenant-1-proxy-svc   LoadBalancer   10.96.19.153   <pending>     8080:30581/TCP   5m19s
 ```
 
 
