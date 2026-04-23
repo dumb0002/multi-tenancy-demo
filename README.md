@@ -2,6 +2,16 @@
 
 This guide demonstrates how to build a multi-tenant Kubernetes environment with complete isolation at the network, control plane, and compute levels using User-Defined Networks (UDNs), KubeFlex, and KubeVirt.
 
+## Overview
+
+This is a **simple demonstration** running on a **KIND (Kubernetes in Docker) cluster** that showcases multi-tenancy isolation using **two tenants** (tenant-1 and tenant-2) as a use case. Each tenant runs an **nginx workload** to demonstrate complete isolation across:
+
+- **Network Layer**: Isolated User-Defined Networks (UDNs) with separate routing tables
+- **Control Plane Layer**: Dedicated K3s control planes per tenant using KubeFlex
+- **Compute Layer**: Isolated worker VMs running in KubeVirt
+
+Both tenants are completely isolated from each other while running on the same underlying KIND cluster, proving that true multi-tenancy can be achieved with the right combination of technologies.
+
 ## Table of Contents
 
 1. [Requirements](#requirements)
@@ -243,8 +253,8 @@ postgres-postgresql-0                          1/1     Running     0          10
 Create UDNs for both tenants:
 
 ```bash
-kubectl create -f udn-tenant-1.yaml
-kubectl create -f udn-tenant-2.yaml
+kubectl create -f tenant-1/udn-tenant-1.yaml
+kubectl create -f tenant-2/udn-tenant-2.yaml
 ```
 
 Check the Components:
@@ -329,8 +339,8 @@ Patch the K3s StatefulSets for UDN Configurations:
 1. Apply the Patch for both tenants:
 
 ```bash
-kubectl -n tenant-1-cp-system patch statefulset k3s-server --type=strategic --patch-file tenant-1-k3s-patch.yaml
-kubectl -n tenant-2-cp-system patch statefulset k3s-server --type=strategic --patch-file tenant-2-k3s-patch.yaml
+kubectl -n tenant-1-cp-system patch statefulset k3s-server --type=strategic --patch-file tenant-1/tenant-1-k3s-patch.yaml
+kubectl -n tenant-2-cp-system patch statefulset k3s-server --type=strategic --patch-file tenant-2/tenant-2-k3s-patch.yaml
 ```
 
 2. Verify the Patches:
@@ -435,9 +445,8 @@ Processing tenant: tenant-1
 #### b) Create the VMs
 
 ```bash
-for TENANT in tenant-1 tenant-2; do
-  kubectl -n ${TENANT} create -f ${TENANT}-vm-kind.yaml
-done
+kubectl -n tenant-1 create -f tenant-1/tenant-1-vm-kind.yaml
+kubectl -n tenant-2 create -f tenant-2/tenant-2-vm-kind.yaml
 ```
 
 Check if the VMs were created successfully and are running:
@@ -494,11 +503,8 @@ done
 Create RBAC and proxy pods for both tenants:
 
 ```bash
-for TENANT in tenant-1 tenant-2; do
-  # Create tenant-specific proxy pod file
-  sed "s/tenant-1/${TENANT}/g" tenant-1-proxy-pod.yaml > ${TENANT}-proxy-pod.yaml
-  kubectl create -f ${TENANT}-proxy-pod.yaml
-done
+kubectl create -f tenant-1/tenant-1-proxy-pod.yaml
+kubectl create -f tenant-2/tenant-2-proxy-pod.yaml
 ```
 
 Verify that proxy pods are running:
@@ -549,11 +555,13 @@ tenant-1-worker2   Ready    <none>                 6h31m   v1.30.13+k3s1
 Deploy the workloads to both tenants:
 
 ```bash
-for TENANT in tenant-1 tenant-2; do
-  echo "=== Deploying to ${TENANT} ==="
-  kubectl --kubeconfig=${TENANT}-kubeconfig.yaml create -f nginx-deployment.yaml
-  kubectl --kubeconfig=${TENANT}-kubeconfig.yaml get all -l purpose=multi-tenancy-demo
-done
+# Deploy to tenant-1
+kubectl --kubeconfig=tenant-1-kubeconfig.yaml create -f tenant-1/tenant-1-nginx-deployment.yaml
+kubectl --kubeconfig=tenant-1-kubeconfig.yaml get all -l purpose=multi-tenancy-demo
+
+# Deploy to tenant-2
+kubectl --kubeconfig=tenant-2-kubeconfig.yaml create -f tenant-2/tenant-2-nginx-deployment.yaml
+kubectl --kubeconfig=tenant-2-kubeconfig.yaml get all -l purpose=multi-tenancy-demo
 ```
 
 Expected similar output for each tenant:
