@@ -34,8 +34,8 @@ Both tenants are completely isolated from each other while running on the same u
 ### System Requirements
 - **OS**: Linux (Ubuntu 20.04+ or similar)
 - **CPU**: 8+ cores recommended
-- **RAM**: 16GB+ recommended
-- **Disk**: 50GB+ free space
+- **RAM**: 64GB+ recommended
+- **Disk**: 100GB+ free space
 
 ### Required Tools
 
