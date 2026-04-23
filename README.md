@@ -551,7 +551,6 @@ Expected similar output for each tenant:
 NAME               STATUS   ROLES                  AGE     VERSION
 k3s-server-0       Ready    control-plane,master   27h     v1.30.13+k3s1
 tenant-1-worker1   Ready    <none>                 6h31m   v1.30.13+k3s1
-tenant-1-worker2   Ready    <none>                 6h31m   v1.30.13+k3s1
 ```
 
 Deploy the workloads to both tenants:
@@ -588,7 +587,7 @@ kubectl -n tenant-1-proxy get svc
 kubectl -n tenant-2-proxy get svc
 ```
 
-Expected output:
+Expected similar output:
 ```console
 NAME                 TYPE           CLUSTER-IP     EXTERNAL-IP   PORT(S)          AGE
 tenant-1-proxy-svc   LoadBalancer   10.96.19.153   <pending>     8080:30581/TCP   9s
@@ -622,7 +621,7 @@ Expected similar output for both tenants:
 <!DOCTYPE html>
 <html>
 <head>
-<title>Welcome to nginx!</title>
+<title>Welcome to nginx from tenant-1!</title>
 <style>
     body {
         width: 35em;
@@ -632,7 +631,7 @@ Expected similar output for both tenants:
 </style>
 </head>
 <body>
-<h1>Welcome to nginx!</h1>
+<h1>Welcome to nginx from tenant-1!</h1>
 <p>If you see this page, the nginx web server is successfully installed and
 working. Further configuration is required.</p>
 
@@ -641,7 +640,7 @@ working. Further configuration is required.</p>
 Commercial support is available at
 <a href="http://nginx.com/">nginx.com</a>.</p>
 
-<p><em>Thank you for using nginx.</em></p>
+<p><em>Thank you for using nginx from tenant-1.</em></p>
 </body>
 </html>
 ```
