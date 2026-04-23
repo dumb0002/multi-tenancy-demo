@@ -597,10 +597,10 @@ Forward ports to access both services (use separate terminals or background proc
 
 ```bash
 # Terminal 1 (or background)
-kubectl -n tenant-1-proxy port-forward svc/tenant-1-proxy-svc 8080:8080 &
+nohup kubectl -n tenant-1-proxy port-forward svc/tenant-1-proxy-svc 8080:8080 &
 
 # Terminal 2 (or background)
-kubectl -n tenant-2-proxy port-forward svc/tenant-2-proxy-svc 8081:8080 &
+nohup kubectl -n tenant-2-proxy port-forward svc/tenant-2-proxy-svc 8081:8080 &
 ```
 
 Send requests to both tenants:
