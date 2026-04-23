@@ -6,7 +6,7 @@ This guide demonstrates how to build a multi-tenant Kubernetes environment with 
 
 ## Overview
 
-This is a **simple demonstration** running on a **KIND (Kubernetes in Docker) cluster** that showcases the three shades of isolation for multi-tenancy isolation using **two tenants** (tenant-1 and tenant-2) as a use case. Each tenant runs an **nginx workload** to demonstrate complete isolation across:
+This is a **simple demonstration** running on a **KIND (Kubernetes in Docker) cluster** that showcases the three shades of isolation for multi-tenancy using **two tenants** (tenant-1 and tenant-2) as a use case. Each tenant runs an **nginx workload** to demonstrate complete isolation across:
 
 - **Network Layer**: Isolated User-Defined Networks (UDNs) with separate routing tables
 - **Control Plane Layer**: Dedicated K3s control planes per tenant using KubeFlex
@@ -398,25 +398,49 @@ k3s-server-0   Ready    control-plane,master   26m   v1.30.13+k3s1   104.104.0.2
 
 ## 7. Create UDN EgressIP for Egress connectivity:
 
-Create egress IPs for each tenant:
+#### a) Label worker nodes to allow EgressIP assignment
+
+Before creating EgressIP resources, you must label the worker nodes that are eligible to host EgressIPs:
+
+```bash
+# Label the worker nodes to allow EgressIP
+kubectl label nodes ovn-worker k8s.ovn.org/egress-assignable=""
+kubectl label nodes ovn-worker2 k8s.ovn.org/egress-assignable=""
+
+# Verify the labels were applied
+kubectl get nodes --show-labels | grep egress-assignable
+```
+
+Expected output:
+```console
+ovn-worker    Ready    <none>   1h   v1.31.0   ...k8s.ovn.org/egress-assignable=...
+ovn-worker2   Ready    <none>   1h   v1.31.0   ...k8s.ovn.org/egress-assignable=...
+```
+
+#### b) Create EgressIP resources for both tenants
+
 ```bash
 for TENANT in tenant-1 tenant-2; do
   ./create-egressip.sh ${TENANT}
 done
 ```
 
-Check if the egressIPs were created successfully:
+#### c) Verify EgressIP assignment
+
+Check if the egressIPs were created and assigned successfully:
 
 ```bash
-kubectl get egressIP
+kubectl get egressip
 ```
 
-Expected similar output:
+Expected output:
 ```console
-NAME              EGRESSIPS    ASSIGNED NODE       ASSIGNED EGRESSIPS
-tenant-1-egress   172.19.0.5   ovn-control-plane   172.19.0.5
-tenant-2-egress   172.19.0.6   ovn-control-plane   172.19.0.6
+NAME              EGRESSIPS    ASSIGNED NODE   ASSIGNED EGRESSIPS
+tenant-1-egress   172.19.0.5   ovn-worker      172.19.0.5
+tenant-2-egress   172.19.0.6   ovn-worker2     172.19.0.6
 ```
+
+**Note:** The `ASSIGNED NODE` column should show one of the worker nodes (`ovn-worker` or `ovn-worker2`). If it's empty, check that the node labels were applied correctly.
 
 ## 8. Create VMs and Attach to K3s Control Planes
 
