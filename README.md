@@ -214,11 +214,8 @@ Patch the K3s StatefulSets for UDN Configurations:
 1. Apply the Patch for both tenants:
 
 ```bash
-for TENANT in tenant-1 tenant-2; do
-  # Create tenant-specific patch file
-  sed "s/tenant-1/${TENANT}/g" k3s-patch.yaml > k3s-patch-${TENANT}.yaml
-  kubectl -n ${TENANT}-cp-system patch statefulset k3s-server --type=strategic --patch-file k3s-patch-${TENANT}.yaml
-done
+kubectl -n tenant-1-cp-system patch statefulset k3s-server --type=strategic --patch-file tenant-1-k3s-patch.yaml
+kubectl -n tenant-2-cp-system patch statefulset k3s-server --type=strategic --patch-file tenant-2-k3s-patch.yaml
 ```
 
 2. Verify the Patches:
