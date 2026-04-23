@@ -254,7 +254,7 @@ Expected similar output for each tenant:
 ```
 
 
-Verify nodes for both tenants:
+Verify control-plane node for both tenants:
 ```bash
 for TENANT in tenant-1 tenant-2; do
   echo "=== ${TENANT} nodes ==="

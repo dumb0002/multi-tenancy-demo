@@ -39,16 +39,32 @@ if [ -z "$USED_IPS" ]; then
   exit 1
 fi
 
-echo "Used IPs:"
+echo "Used IPs from Docker network:"
 echo "$USED_IPS"
 echo ""
+
+# Get IPs already assigned to EgressIP resources
+echo "Checking existing EgressIP resources..."
+EGRESS_IPS=$(kubectl get egressip -o jsonpath='{.items[*].spec.egressIPs[*]}' 2>/dev/null | tr ' ' '\n')
+
+if [ -n "$EGRESS_IPS" ]; then
+  echo "IPs already assigned to EgressIP resources:"
+  echo "$EGRESS_IPS"
+  echo ""
+  # Combine both lists
+  ALL_USED_IPS=$(echo -e "${USED_IPS}\n${EGRESS_IPS}" | sort -u)
+else
+  echo "No existing EgressIP resources found"
+  echo ""
+  ALL_USED_IPS="$USED_IPS"
+fi
 
 # Find first unused IP starting from .5
 echo "Finding unused IP in range 172.19.0.5-254..."
 UNUSED_IP=""
 for i in {5..254}; do
   IP="172.19.0.${i}"
-  if ! echo "$USED_IPS" | grep -q "^${IP}$"; then
+  if ! echo "$ALL_USED_IPS" | grep -q "^${IP}$"; then
     UNUSED_IP="$IP"
     break
   fi
