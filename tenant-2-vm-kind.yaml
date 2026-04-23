@@ -2,7 +2,6 @@ apiVersion: kubevirt.io/v1
 kind: VirtualMachine
 metadata:
   name: tenant-2-worker1
-  namespace: tenant-2
   labels:
     purpose: multi-tenancy-demo
     user: tenant-2
